@@ -99,7 +99,7 @@ export default function Home() {
       />
 
       <header style={{ flexShrink: 0, borderBottom: `1px solid ${LINE}` }}>
-        <div style={{ maxWidth: CONTENT_WIDTH, margin: "0 auto", padding: "12px 24px", fontSize: 13, fontWeight: 700, letterSpacing: "0.04em" }}>
+        <div style={{ maxWidth: CONTENT_WIDTH, margin: "0 auto", padding: "12px 24px", fontSize: 13, fontWeight: 700, letterSpacing: "0.04em", textAlign: "center" }}>
           Takwirira Labs
         </div>
       </header>
@@ -141,7 +141,7 @@ export default function Home() {
       </div>
 
       <footer style={{ flexShrink: 0, borderTop: `1px solid ${LINE}` }}>
-        <div style={{ maxWidth: CONTENT_WIDTH, margin: "0 auto", padding: "10px 24px", fontSize: 11.5, color: FAINT }}>
+        <div style={{ maxWidth: CONTENT_WIDTH, margin: "0 auto", padding: "10px 24px", fontSize: 11.5, color: FAINT, textAlign: "center" }}>
           Takwirira Labs &middot; {new Date().getFullYear()}
         </div>
       </footer>
