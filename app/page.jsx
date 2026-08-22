@@ -9,6 +9,8 @@ const GREEN_DIM = "#E6F4E7";
 const AMBER = "#B8791A";
 const AMBER_DIM = "#FBF1E1";
 
+const CONTENT_WIDTH = 1040;
+
 const projects = [
   {
     name: "FinanceGPT",
@@ -79,14 +81,14 @@ function ProjectCard({ project }) {
 
 export default function Home() {
   return (
-    <main
-      style={{
-        minHeight: "100dvh",
-        background: BG,
-        color: INK,
-        boxSizing: "border-box",
-      }}
-    >
+    // App-shell layout: header and footer are non-scrolling flex children,
+    // so they can never move — only the middle section (its own overflow-y
+    // region) scrolls. html/body are locked in layout.jsx so the page itself
+    // never scrolls either; without that, a tall inner region could still
+    // drag html/body along with it. Header/footer padding is deliberately
+    // minimal — every pixel not spent on them is a pixel back for the
+    // scrollable content.
+    <div style={{ height: "100dvh", display: "flex", flexDirection: "column", background: BG, color: INK }}>
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -96,46 +98,53 @@ export default function Home() {
         }}
       />
 
-      <div style={{ maxWidth: 1040, margin: "0 auto", padding: "clamp(48px, 8vw, 96px) 24px 80px" }}>
-        <header style={{ marginBottom: "clamp(40px, 6vw, 72px)" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: GREEN, marginBottom: 14 }}>
-            Takwirira Labs
-          </div>
-          <h1
-            style={{
-              fontSize: "clamp(34px, 5vw, 52px)", fontWeight: 700, letterSpacing: "-0.02em",
-              lineHeight: 1.08, margin: 0, maxWidth: 720,
-            }}
-          >
-            Software built with intent, one deliberate product at a time.
-          </h1>
-          <p style={{ fontSize: 17, color: MUTED, marginTop: 20, maxWidth: 560, lineHeight: 1.6 }}>
-            A small collection of instrument-grade tools — each one built for a real
-            problem, not a demo.
-          </p>
-        </header>
+      <header style={{ flexShrink: 0, borderBottom: `1px solid ${LINE}` }}>
+        <div style={{ maxWidth: CONTENT_WIDTH, margin: "0 auto", padding: "12px 24px", fontSize: 13, fontWeight: 700, letterSpacing: "0.04em" }}>
+          Takwirira Labs
+        </div>
+      </header>
 
-        <section>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: FAINT, marginBottom: 18 }}>
-            Projects
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto" }}>
+        <div style={{ maxWidth: CONTENT_WIDTH, margin: "0 auto", padding: "clamp(32px, 6vw, 64px) 24px 48px" }}>
+          <div style={{ marginBottom: "clamp(32px, 5vw, 56px)" }}>
+            <h1
+              style={{
+                fontSize: "clamp(30px, 4.5vw, 46px)", fontWeight: 700, letterSpacing: "-0.02em",
+                lineHeight: 1.1, margin: 0, maxWidth: 720,
+              }}
+            >
+              Software built with intent, one deliberate product at a time.
+            </h1>
+            <p style={{ fontSize: 16, color: MUTED, marginTop: 16, maxWidth: 560, lineHeight: 1.6 }}>
+              A small collection of instrument-grade tools — each one built for a real
+              problem, not a demo.
+            </p>
           </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: 20,
-            }}
-          >
-            {projects.map((project) => (
-              <ProjectCard key={project.name} project={project} />
-            ))}
-          </div>
-        </section>
 
-        <footer style={{ marginTop: "clamp(56px, 8vw, 96px)", paddingTop: 24, borderTop: `1px solid ${LINE}` }}>
-          <div style={{ fontSize: 12.5, color: FAINT }}>Takwirira Labs &middot; {new Date().getFullYear()}</div>
-        </footer>
+          <section>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: FAINT, marginBottom: 18 }}>
+              Projects
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+                gap: 20,
+              }}
+            >
+              {projects.map((project) => (
+                <ProjectCard key={project.name} project={project} />
+              ))}
+            </div>
+          </section>
+        </div>
       </div>
-    </main>
+
+      <footer style={{ flexShrink: 0, borderTop: `1px solid ${LINE}` }}>
+        <div style={{ maxWidth: CONTENT_WIDTH, margin: "0 auto", padding: "10px 24px", fontSize: 11.5, color: FAINT }}>
+          Takwirira Labs &middot; {new Date().getFullYear()}
+        </div>
+      </footer>
+    </div>
   );
 }
