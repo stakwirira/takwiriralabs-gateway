@@ -1,150 +1,189 @@
-const INK = "#141613";
-const MUTED = "#39423B";
-const FAINT = "#6B736D";
-const BG = "#F7F8F7";
-const SURFACE = "#FFFFFF";
-const LINE = "#E3E7E3";
-const GREEN = "#2E9E3A";
-const GREEN_DIM = "#E6F4E7";
-const AMBER = "#B8791A";
-const AMBER_DIM = "#FBF1E1";
-
-const CONTENT_WIDTH = 1040;
+const beamlineIsLive = Boolean(process.env.BEAMLINE_ORIGIN && process.env.BEAMLINE_API_ORIGIN);
 
 const projects = [
   {
     name: "FinanceGPT",
-    tag: "Personal finance",
-    description: "An instrument-grade personal finance command center — transactions, savings-first budgets, portfolio, and AI planning.",
+    kind: "Personal finance, reimagined",
+    description:
+      "A clear-headed financial command center that turns transactions, savings goals, portfolios, and planning into a quieter kind of confidence.",
     href: "/FinanceGPT",
-    status: "live",
-    accent: GREEN,
-    accentDim: GREEN_DIM,
+    status: "Live now",
+    visual: "finance",
+    details: ["Clarity over clutter", "Built for real decisions"],
   },
   {
     name: "Beamline",
-    tag: "Radiation oncology physics",
-    description: "A vendor-neutral linac downtime, SLA-breach, and penalty-estimate dashboard for radiation oncology physics departments.",
-    href: null,
-    status: "In development",
-    accent: AMBER,
-    accentDim: AMBER_DIM,
+    kind: "Radiation oncology operations",
+    description:
+      "A vigilant operations layer for radiation oncology teams—tracking linac downtime, SLA exposure, and the details that deserve to stay visible.",
+    href: "/Beamline",
+    status: beamlineIsLive ? "Live now" : "In development",
+    visual: "beamline",
+    details: ["Vendor-neutral", "Built for clinical precision"],
   },
 ];
 
-function ProjectCard({ project }) {
-  const isLive = project.status === "live";
-  const Tag = isLive ? "a" : "div";
+function Arrow({ diagonal = false }) {
+  return <span aria-hidden="true">{diagonal ? "↗" : "→"}</span>;
+}
+
+function BrandMark() {
   return (
-    <Tag
-      href={isLive ? project.href : undefined}
-      className="project-card"
-      style={{
-        display: "block",
-        textDecoration: "none",
-        color: "inherit",
-        background: SURFACE,
-        border: `1px solid ${LINE}`,
-        borderRadius: 18,
-        padding: "28px 28px 26px",
-        boxShadow: "0 1px 2px rgba(20,22,19,0.04)",
-        cursor: isLive ? "pointer" : "default",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-        <div
-          style={{
-            fontSize: 10.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase",
-            color: project.accent, background: project.accentDim, borderRadius: 20, padding: "4px 10px",
-          }}
-        >
-          {project.tag}
-        </div>
-        {!isLive && (
-          <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.04em", color: FAINT }}>
-            {project.status}
-          </div>
-        )}
-      </div>
-
-      <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.01em", marginTop: 16 }}>{project.name}</div>
-      <div style={{ fontSize: 14, color: MUTED, marginTop: 8, lineHeight: 1.6, maxWidth: 440 }}>{project.description}</div>
-
-      <div style={{ marginTop: 22, fontSize: 13, fontWeight: 700, color: isLive ? project.accent : FAINT }}>
-        {isLive ? <>Open <span aria-hidden="true">&rarr;</span></> : "Coming soon"}
-      </div>
-    </Tag>
+    <svg className="brand-mark" viewBox="0 0 38 38" fill="none" aria-hidden="true">
+      <path d="M19 2.5v33M2.5 19h33" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M7.5 7.5 30.5 30.5M30.5 7.5 7.5 30.5" stroke="currentColor" strokeWidth="1" opacity=".55" />
+      <circle cx="19" cy="19" r="5.25" fill="currentColor" />
+    </svg>
   );
+}
+
+function FinanceAbstract() {
+  return (
+    <div className="project-abstract finance-abstract" aria-hidden="true">
+      <div className="finance-orbit finance-orbit-one" />
+      <div className="finance-orbit finance-orbit-two" />
+      <div className="finance-sun" />
+      <div className="finance-panel finance-panel-one">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="finance-panel finance-panel-two" />
+      <div className="finance-curve" />
+      <div className="abstract-caption">ORDER / POSSIBILITY</div>
+    </div>
+  );
+}
+
+function BeamlineAbstract() {
+  return (
+    <div className="project-abstract beamline-abstract" aria-hidden="true">
+      <div className="beamline-halo" />
+      <div className="beamline-grid" />
+      <div className="beamline-axis beamline-axis-horizontal" />
+      <div className="beamline-axis beamline-axis-vertical" />
+      <div className="beamline-beam" />
+      <div className="beamline-target" />
+      <div className="beamline-coordinate coordinate-one">X / 02</div>
+      <div className="beamline-coordinate coordinate-two">Y / 17</div>
+      <div className="abstract-caption">SIGNAL / OVERSIGHT</div>
+    </div>
+  );
+}
+
+function ProjectCard({ project }) {
+  const isLive = project.status === "Live now";
+  const body = (
+    <>
+      {project.visual === "finance" ? <FinanceAbstract /> : <BeamlineAbstract />}
+      <div className="project-card-content">
+        <div className="project-card-topline">
+          <p>{project.kind}</p>
+          <span className={isLive ? "project-status project-status-live" : "project-status"}>
+            <i />
+            {project.status}
+          </span>
+        </div>
+        <h3>{project.name}</h3>
+        <p className="project-description">{project.description}</p>
+        <div className="project-bottom-row">
+          <ul className="project-details" aria-label={`${project.name} qualities`}>
+            {project.details.map((detail) => (
+              <li key={detail}>{detail}</li>
+            ))}
+          </ul>
+          <span className="project-link-label">
+            {isLive ? "Open project" : "Launching soon"} <Arrow />
+          </span>
+        </div>
+      </div>
+    </>
+  );
+
+  if (isLive) {
+    return (
+      <a className={`project-card project-card-${project.visual}`} href={project.href}>
+        {body}
+      </a>
+    );
+  }
+
+  return <article className={`project-card project-card-${project.visual}`}>{body}</article>;
 }
 
 export default function Home() {
   return (
-    // App-shell layout: header and footer are non-scrolling flex children,
-    // so they can never move — only the middle section (its own overflow-y
-    // region) scrolls. html/body are locked in layout.jsx so the page itself
-    // never scrolls either; without that, a tall inner region could still
-    // drag html/body along with it. Header/footer padding is deliberately
-    // minimal — every pixel not spent on them is a pixel back for the
-    // scrollable content.
-    <div style={{ height: "100dvh", display: "flex", flexDirection: "column", background: BG, color: INK }}>
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-            .project-card { transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
-            .project-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(20,22,19,0.08); border-color: #D7DCD7; }
-          `,
-        }}
-      />
+    <main>
+      <div className="ambient ambient-one" />
+      <div className="ambient ambient-two" />
 
-      <header style={{ flexShrink: 0, borderBottom: `1px solid ${LINE}` }}>
-        <div style={{ maxWidth: CONTENT_WIDTH, margin: "0 auto", padding: "12px 24px", fontSize: 13, fontWeight: 700, letterSpacing: "0.04em", textAlign: "center" }}>
-          Takwirira Labs
-        </div>
+      <header className="site-header">
+        <a className="brand" href="#top" aria-label="Takwirira Labs home">
+          <BrandMark />
+          <span>Takwirira <em>Labs</em></span>
+        </a>
+        <a className="header-link" href="#work">
+          Our work <Arrow diagonal />
+        </a>
       </header>
 
-      <div style={{ flex: 1, minHeight: 0, overflowY: "auto" }}>
-        <div style={{ maxWidth: CONTENT_WIDTH, margin: "0 auto", padding: "clamp(32px, 6vw, 64px) 24px 48px" }}>
-          <div style={{ marginBottom: "clamp(32px, 5vw, 56px)" }}>
-            <h1
-              style={{
-                fontSize: "clamp(30px, 4.5vw, 46px)", fontWeight: 700, letterSpacing: "-0.02em",
-                lineHeight: 1.1, margin: 0, maxWidth: 720,
-              }}
-            >
-              Software built with intent, one deliberate product at a time.
-            </h1>
-            <p style={{ fontSize: 16, color: MUTED, marginTop: 16, maxWidth: 560, lineHeight: 1.6 }}>
-              A small collection of instrument-grade tools — each one built for a real
-              problem, not a demo.
-            </p>
+      <section className="hero" id="top" aria-labelledby="hero-title">
+        <div className="hero-copy">
+          <p className="eyebrow"><span /> Independent product studio</p>
+          <h1 id="hero-title">Tools for the work that <i>cannot</i> be sloppy.</h1>
+          <p className="hero-intro">
+            Takwirira Labs designs considered software for complex, consequential work—where a little more clarity changes everything.
+          </p>
+          <a className="hero-cta" href="#work">
+            Explore our work <Arrow />
+          </a>
+        </div>
+
+        <div className="hero-art" aria-hidden="true">
+          <div className="hero-art-ring ring-one" />
+          <div className="hero-art-ring ring-two" />
+          <div className="hero-art-line line-one" />
+          <div className="hero-art-line line-two" />
+          <div className="hero-art-orb" />
+          <div className="hero-art-index">TL / 01</div>
+          <div className="hero-art-word">intent<br />made<br /><b>tangible</b></div>
+        </div>
+      </section>
+
+      <section className="work-section" id="work" aria-labelledby="work-title">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow"><span /> Selected work</p>
+            <h2 id="work-title">Small in number.<br /><i>Deliberate</i> by nature.</h2>
           </div>
-
-          <section>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: FAINT, marginBottom: 18 }}>
-              Projects
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: 20,
-              }}
-            >
-              {projects.map((project) => (
-                <ProjectCard key={project.name} project={project} />
-              ))}
-            </div>
-          </section>
+          <p>
+            We stay close to the problem, then build the calmest possible way through it.
+          </p>
         </div>
-      </div>
 
-      <footer style={{ flexShrink: 0, borderTop: `1px solid ${LINE}` }}>
-        <div style={{ maxWidth: CONTENT_WIDTH, margin: "0 auto", padding: "10px 24px", fontSize: 11.5, color: FAINT, textAlign: "center" }}>
-          Takwirira Labs &middot; {new Date().getFullYear()}
+        <div className="project-grid">
+          {projects.map((project) => <ProjectCard key={project.name} project={project} />)}
         </div>
+      </section>
+
+      <section className="principle-section" aria-labelledby="principle-title">
+        <p className="eyebrow"><span /> Our approach</p>
+        <div className="principle-row">
+          <h2 id="principle-title">The details are the product.</h2>
+          <p>
+            We make ambitious systems feel legible: purposeful interfaces, trustworthy data, and just enough technology to remove friction—not add to it.
+          </p>
+        </div>
+      </section>
+
+      <footer className="site-footer">
+        <a className="brand" href="#top" aria-label="Back to top">
+          <BrandMark />
+          <span>Takwirira <em>Labs</em></span>
+        </a>
+        <p>Independent software, made with care.</p>
+        <p>© {new Date().getFullYear()} Takwirira Labs</p>
       </footer>
-    </div>
+    </main>
   );
 }

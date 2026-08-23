@@ -1,21 +1,38 @@
-// This project owns takwiriralabs.com — the root shows a small listing of
-// what's hosted here, and everything under a project's own path prefix is
-// proxied straight through to that project's own Vercel deployment (the
-// "Multi-Zones" pattern: several independently-deployed apps sharing one
-// domain by path, each one still just a normal, separately-owned project).
+// Each product is an independently deployed app. The gateway keeps the public
+// domain cohesive by proxying a product's path prefix to that product's Vercel
+// deployment (the Vercel Multi-Zones pattern).
 //
-// Each proxied app is responsible for its OWN basePath matching the prefix
-// used here (see FinanceGPT's app/lib/base-path.mjs) — this config only
-// decides which prefix routes to which deployment, nothing about how that
-// deployment renders its own pages.
+// BEAMLINE_ORIGIN and BEAMLINE_API_ORIGIN intentionally have no defaults: add
+// them in the gateway's Vercel project only after both Beamline deployments
+// have stable HTTPS URLs. This keeps local builds and previews valid before
+// Beamline is provisioned.
+const beamlineOrigin = process.env.BEAMLINE_ORIGIN?.replace(/\/$/, "");
+const beamlineApiOrigin = process.env.BEAMLINE_API_ORIGIN?.replace(/\/$/, "");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
   async rewrites() {
-    return [
+    const rewrites = [
       { source: "/FinanceGPT", destination: "https://financegpt-alpha.vercel.app/FinanceGPT" },
       { source: "/FinanceGPT/:path*", destination: "https://financegpt-alpha.vercel.app/FinanceGPT/:path*" },
     ];
+
+    if (beamlineApiOrigin) {
+      rewrites.push({
+        source: "/Beamline/api/:path*",
+        destination: `${beamlineApiOrigin}/api/:path*`,
+      });
+    }
+
+    if (beamlineOrigin) {
+      rewrites.push(
+        { source: "/Beamline", destination: `${beamlineOrigin}/Beamline` },
+        { source: "/Beamline/:path*", destination: `${beamlineOrigin}/Beamline/:path*` },
+      );
+    }
+
+    return rewrites;
   },
 };
 
