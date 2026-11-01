@@ -1,5 +1,3 @@
-const beamlineIsLive = Boolean(process.env.BEAMLINE_ORIGIN && process.env.BEAMLINE_API_ORIGIN);
-
 const projects = [
   {
     name: "FinanceGPT",
@@ -10,16 +8,6 @@ const projects = [
     status: "Live now",
     visual: "finance",
     details: ["Clarity over clutter", "Built for real decisions"],
-  },
-  {
-    name: "Beamline",
-    kind: "Radiation oncology operations",
-    description:
-      "A vigilant operations layer for radiation oncology teams—tracking linac downtime, SLA exposure, and the details that deserve to stay visible.",
-    href: "/Beamline",
-    status: beamlineIsLive ? "Live now" : "In development",
-    visual: "beamline",
-    details: ["Vendor-neutral", "Built for clinical precision"],
   },
 ];
 
@@ -55,27 +43,11 @@ function FinanceAbstract() {
   );
 }
 
-function BeamlineAbstract() {
-  return (
-    <div className="project-abstract beamline-abstract" aria-hidden="true">
-      <div className="beamline-halo" />
-      <div className="beamline-grid" />
-      <div className="beamline-axis beamline-axis-horizontal" />
-      <div className="beamline-axis beamline-axis-vertical" />
-      <div className="beamline-beam" />
-      <div className="beamline-target" />
-      <div className="beamline-coordinate coordinate-one">X / 02</div>
-      <div className="beamline-coordinate coordinate-two">Y / 17</div>
-      <div className="abstract-caption">SIGNAL / OVERSIGHT</div>
-    </div>
-  );
-}
-
 function ProjectCard({ project }) {
   const isLive = project.status === "Live now";
   const body = (
     <>
-      {project.visual === "finance" ? <FinanceAbstract /> : <BeamlineAbstract />}
+      <FinanceAbstract />
       <div className="project-card-content">
         <div className="project-card-topline">
           <p>{project.kind}</p>
