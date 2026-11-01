@@ -3,7 +3,7 @@ import "./globals.css";
 export const metadata = {
   title: "Takwirira Labs | Deliberate software for consequential work",
   description:
-    "Takwirira Labs creates considered software for complex, consequential work—from personal finance to radiation oncology operations.",
+    "Takwirira Labs creates considered software for complex, consequential work.",
 };
 
 export default function RootLayout({ children }) {
